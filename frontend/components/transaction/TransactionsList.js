@@ -15,7 +15,7 @@ const TransactionsList = ({ connected, transactions }) => {
     return (
         <div>
             <div className="bg-[#f6f6f6] pb-4 pt-10">
-                <p className="mx-auto max-w-3xl px-10 text-sm font-medium uppercase text-[#abafb2] xl:px-0">Transactions</p>
+                <p className="mx-auto max-w-3xl px-10 text-sm font-medium uppercase text-[#abafb2] xl:px-0">CryptoPay Statement</p>
             </div>
             <div className="mx-auto max-w-3xl divide-y divide-gray-100 py-4 px-10 xl:px-0">
                 {connected ? (
@@ -23,8 +23,9 @@ const TransactionsList = ({ connected, transactions }) => {
                         {transactions.map(({ id, to, amount, description, transactionDate }) => (
                             <TransactionItem key={id} id={id} to={to} description={description} transactionDate={transactionDate} amount={amount} toggleTransactionDetailModal={toggleTransactionDetailModal} />
                         ))}
-
                         <TransactionDetailModal modalOpen={modalOpen} setModalOpen={setModalOpen} currentTransaction={currentTransaction} />
+                        <TransactionItem key='total' id='total' to="Today's Total" description="CryptoTotal" transactionDate={new Date()} amount={transactions.map(a => parseFloat(a.amount)).reduce((a, b) => a + b, 0).toFixed(3)}/>
+
                     </>
                 ) : (
                     <div className="flex items-center justify-center pt-20">

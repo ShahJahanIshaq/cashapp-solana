@@ -16,13 +16,14 @@
     "@solana/wallet-adapter-wallets": "^0.18.9",
     "date-fns": "^2.29.2",
     "md5": "^2.3.0",
-    "next": "12.2.5",
+    "next": "^12.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
     "@heroicons/react": "^2.0.10",
     "autoprefixer": "^10.4.8",
+    "buffer": "^6.0.3",
     "eslint": "8.23.0",
     "eslint-config-next": "12.2.5",
     "postcss": "^8.4.16",

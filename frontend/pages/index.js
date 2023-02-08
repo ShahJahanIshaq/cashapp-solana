@@ -21,13 +21,13 @@ const Home = () => {
 
     return (
         <div className="flex min-h-screen ">
-            <header className="flex w-[250px] flex-col bg-[#0bb534] p-12">
+            <header className="flex w-[250px] flex-col bg-[#9D1BF2] p-12 bg-gradient-to-br from-violet-700 to-fuchsia-500">
                 <Profile setModalOpen={setTransactionQRModalOpen} avatar={avatar} userAddress={userAddress} setQrCode={setQrCode} />
-                <TransactionQRModal modalOpen={transactionQRModalOpen} setModalOpen={setTransactionQRModalOpen} userAddress={userAddress} setQrCode={setQrCode} myKey={publicKey} />
+                <TransactionQRModal modalOpen={transactionQRModalOpen} setModalOpen={setTransactionQRModalOpen} userAddress={userAddress} setQrCode={setQrCode} qrCode = {qrCode} myKey={publicKey} />
 
                 <NavMenu connected={connected} publicKey={publicKey} />
 
-                <Action setModalOpen={setNewTransactionModalOpen} />
+                <Action setModalOpen1={setNewTransactionModalOpen} setModalOpen2={setTransactionQRModalOpen} />
                 <NewTransactionModal modalOpen={newTransactionModalOpen} setModalOpen={setNewTransactionModalOpen} addTransaction={doTransaction} />
             </header>
 

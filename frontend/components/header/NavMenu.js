@@ -1,4 +1,4 @@
-import { ClockIcon, CurrencyDollarIcon, UserCircleIcon, Cog6ToothIcon } from '@heroicons/react/24/outline'
+import { ClockIcon, CurrencyDollarIcon, UserCircleIcon, Cog6ToothIcon, ArrowDownOnSquareIcon } from '@heroicons/react/24/outline'
 import { classNames } from '../../utils/classNames'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { truncate } from '../../utils/string'
@@ -30,8 +30,8 @@ const NavMenu = ({ connected, publicKey }) => {
                     <NavMenuItem key={i} Icon={icon} item={item} current={current} action={action} />
                 ))}
                 <li>
-                    <WalletMultiButton className="phantom-button" startIcon={<UserCircleIcon style={{ height: 24, width: 24, color: '#15ec3c' }} />}>
-                        <span className="text-sm font-semibold text-[#15ec3c]">{connected ? truncate(publicKey.toString()) : 'Connect Wallet'}</span>
+                    <WalletMultiButton className="phantom-button" startIcon={<UserCircleIcon style={{ height: 24, width: 24, color: '#ffffff' }} />}>
+                        <span className="text-sm font-semibold text-[#ffffff]">{connected ? 'Your Wallet' : 'Connect Wallet'}</span>
                     </WalletMultiButton>
                 </li>
             </ul>
@@ -41,7 +41,7 @@ const NavMenu = ({ connected, publicKey }) => {
 
 const NavMenuItem = ({ Icon, item, current, action }) => {
     return (
-        <li onClick={action} className={classNames('flex cursor-pointer space-x-3 transition-all hover:text-gray-100', current ? 'text-white' : 'text-[#15ec3c]', 'font-semibold')}>
+        <li onClick={action} className={classNames('flex cursor-pointer space-x-3 transition-all hover:text-gray-100', current ? 'text-white' : 'text-[#EED2FF]', 'font-semibold')}>
             <Icon className="h-6 w-6 " />
             <span>{item}</span>
         </li>

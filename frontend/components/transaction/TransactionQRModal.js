@@ -10,101 +10,124 @@ import { getAvatarUrl } from "../../functions/getAvatarUrl"
 
 
 
-const TransactionQRModal = ({ modalOpen, setModalOpen, userAddress, setQrCode }) => {
-    const { transactions, setTransactions } = useCashApp()
+const TransactionQRModal = ({ modalOpen, setModalOpen, userAddress, setQrCode, qrCode }) => {
+    const { transactions, setTransactions, connected } = useCashApp()
     const { connection } = useConnection()
+
+    const [qrAmount, setQrAmount] = useState(0);
+    const [qrPurpose, setQrPurpose] = useState("");
+
+    const onAmountInput = (e) => {
+        e.preventDefault()
+        const newAmount = e.target.value
+
+        setQrAmount(newAmount)
+
+        const input = document.querySelector('input#amount')
+        input.style.width = newAmount.length + 'ch'
+    }
+
     const qrRef = useRef()
     const loadQr = () => {
         setQrCode(true)
+        console.log(qrCode)
     }
     useEffect(() => {
-        const recipient = new PublicKey(userAddress)
-        const amount = new BigNumber("1")
-        const reference = Keypair.generate().publicKey
-        const label = "Evil Cookies Inc"
-        const message = "Thanks for your Sol! 🍪"
+        if (connected && userAddress != "Not Available") {
+            const recipient = new PublicKey(userAddress)
+            const amount = new BigNumber(qrAmount)
+            const reference = Keypair.generate().publicKey
+            const label = "CryptoPay"
+            const message = qrPurpose
 
-        const urlParams = {
-            recipient,
-            // splToken: usdcAddress,
-            amount,
-            reference,
-            label,
-            message,
-        }
-        const url = encodeURL(urlParams)
-        const qr = createQR(url, 488, 'transparent')
-        if (qrRef.current) {
-            qrRef.current.innerHTML = ''
-            qr.append(qrRef.current)
-        }
-
-        // Wait for the user to send the transaction
-
-        const interval = setInterval(async () => {
-            console.log("waiting for transaction confirmation")
-            try {
-                // Check if there is any transaction for the reference
-                const signatureInfo = await findReference(connection, reference, { finality: 'confirmed' })
-                console.log("validating")
-                // Validate that the transaction has the expected recipient, amount and SPL token
-                await validateTransfer(
-                    connection,
-                    signatureInfo.signature,
-                    {
-                        recipient,
-                        amount,
-                        // splToken: usdcAddress,
-                        reference,
-                    },
-                    { commitment: 'confirmed' }
-                )
-
-                console.log("confirmed, proceed with evil deeds")
-
-                const newID = (transactions.length + 1).toString()
-                const newTransaction = {
-                    id: newID,
-                    from: {
-                        name: recipient,
-                        handle: recipient,
-                        avatar: getAvatarUrl(recipient.toString()),
-                        verified: true,
-                    },
-                    to: {
-                        name: reference,
-                        handle: '-',
-                        avatar: getAvatarUrl(reference.toString()),
-                        verified: false,
-                    },
-                    description: 'User sent you SOL through Phantom App!',
-                    transactionDate: new Date(),
-                    status: 'Completed',
-                    amount: amount,
-                    source: '-',
-                    identifier: '-',
-                };
-                console.log(newTransaction, "NEW TRANSACTIONS EXISTS")
-                setTransactions([newTransaction, ...transactions]);
-                setModalOpen(false);
-
-
-                clearInterval(interval)
-            } catch (e) {
-                if (e instanceof FindReferenceError) {
-                    // No transaction found yet, ignore this error
-                    return;
-                }
-                if (e instanceof ValidateTransferError) {
-                    // Transaction is invalid
-                    console.error('Transaction is invalid', e)
-                    return;
-                }
-                console.error('Unknown error', e)
+            const urlParams = {
+                recipient,
+                // splToken: usdcAddress,
+                amount,
+                reference,
+                label,
+                message,
             }
-        }, 500)
+            const url = encodeURL(urlParams)
+            const qr = createQR(url, 488, 'transparent')
+            if (qrRef.current && qrCode === true) {
+                qrRef.current.innerHTML = ''
+                qr.append(qrRef.current)
+            }
 
-        return () => clearInterval(interval)
+            // Wait for the user to send the transaction
+
+            const interval = setInterval(async () => {
+                console.log("waiting for transaction confirmation")
+                try {
+                    // Check if there is any transaction for the reference
+                    const signatureInfo = await findReference(connection, reference, { finality: 'confirmed' })
+                    console.log("validating")
+                    // Validate that the transaction has the expected recipient, amount and SPL token
+                    await validateTransfer(
+                        connection,
+                        signatureInfo.signature,
+                        {
+                            recipient,
+                            amount,
+                            // splToken: usdcAddress,
+                            reference,
+                        },
+                        { commitment: 'confirmed' }
+                    )
+
+                    console.log("confirmed, proceed with evil deeds")
+
+                    const newID = (transactions.length + 1).toString()
+                    const newTransaction = {
+                        id: newID,
+                        from: {
+                            name: recipient,
+                            handle: recipient,
+                            avatar: getAvatarUrl(recipient.toString()),
+                            verified: true,
+                        },
+                        to: {
+                            name: reference,
+                            handle: '-',
+                            avatar: getAvatarUrl(reference.toString()),
+                            verified: false,
+                        },
+                        description: qrPurpose,
+                        transactionDate: new Date(),
+                        status: 'Completed',
+                        amount: amount,
+                        source: '-',
+                        identifier: '-',
+                    };
+                    console.log(newTransaction, "NEW TRANSACTIONS EXISTS")
+                    setModalOpen(false);
+                    console.log(transactions)
+                    await setTransactions([newTransaction, ...transactions]);
+                    console.log(transactions)
+                    setQrAmount(0);
+                    setQrPurpose('');
+                    setQrCode(false);
+
+
+                    clearInterval(interval)
+                } catch (e) {
+                    if (e instanceof FindReferenceError) {
+                        // No transaction found yet, ignore this error
+                        return;
+                    }
+                    if (e instanceof ValidateTransferError) {
+                        // Transaction is invalid
+                        console.error('Transaction is invalid', e)
+                        return;
+                    }
+                    console.error('Unknown error', e)
+                }
+            }, 500)
+
+            return () => clearInterval(interval)
+        }
+        
     })
 
     return (
@@ -113,13 +136,21 @@ const TransactionQRModal = ({ modalOpen, setModalOpen, userAddress, setQrCode })
                 <div className="flex flex-col items-center justify-center space-y-1">
                     <div ref={qrRef} />
                 </div>
+                
+                <div className="flex items-center justify-center text-center text-6xl font-semibold text-[#800080]">
+                    <input className="w-12 outline-none" id="amount" name="amount" type="number" value={qrAmount} onChange={onAmountInput} min={0} />
+                    <label htmlFor="amount">SOL</label>
+                </div>
+                <div className="flex rounded-lg border border-gray-200 p-3 mb-3">
+                    <label className="text-gray-300" htmlFor="transactionPurpose">
+                        For:
+                    </label>
+                    <input className="w-full pl-2 font-medium text-gray-600 placeholder-gray-300 outline-none" id="transactionPurpose" name="transactionPurpose" type="text" placeholder="NFT#, TokenSwap etc." value={qrPurpose} onChange={(e) => setQrPurpose(e.target.value)} />
+                </div>
 
-                <div className="flex flex-col items-center justify-center space-y-1">
-                    <p className="text-lg font-medium text-gray-800">{truncate(userAddress)}</p>
+                <div className="flex flex-col items-center justify-center space-y-1">  
 
-                    <p className="text-sm font-light text-gray-600">Scan to pay ${truncate(userAddress)}</p>
-
-                    <button onClick={() => loadQr()} className="w-full rounded-lg bg-[#16d542] py-3 hover:bg-opacity-70">
+                    <button onClick={() => loadQr()} className="w-full rounded-lg bg-[#800080] py-3 hover:bg-opacity-70">
                         <span className="font-medium text-white">Load QR code</span>
                     </button>
                 </div>

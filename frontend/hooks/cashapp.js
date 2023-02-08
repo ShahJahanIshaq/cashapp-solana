@@ -39,6 +39,9 @@ export const useCashApp = () => {
         if (connected) {
             setAvatar(getAvatarUrl(publicKey.toString()))
             setUserAddress(publicKey.toString())
+        } else {
+            setAvatar("")
+            setUserAddress("Not Available")
         }
     }, [connected])
 
@@ -112,15 +115,16 @@ export const useCashApp = () => {
             description: transactionPurpose,
             transactionDate: new Date(),
             status: 'Completed',
-            amount: amount,
+            amount: -amount,
             source: '-',
             identifier: '-',
         };
         setNewTransactionModalOpen(false);
         setTransactions([newTransaction, ...transactions]);
+        console.log(transactions)
     }
 
 
 
-    return { getAvatarUrl, avatar, userAddress, amount, setAmount, makeTransaction, doTransaction, transactions, setTransactions, newTransactionModalOpen, setNewTransactionModalOpen }
+    return { getAvatarUrl, avatar, userAddress, amount, setAmount, makeTransaction, doTransaction, transactions, setTransactions, newTransactionModalOpen, setNewTransactionModalOpen, connected }
 }

@@ -21,13 +21,15 @@ const NewTransactionModal = ({ modalOpen, setModalOpen, addTransaction }) => {
     const onPay = async () => {
         await addTransaction({ amount, receiver, transactionPurpose })
         setAmount(0)
+        setReceiver('')
+        setTransactionPurpose('')
 
     }
 
     return (
         <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
             <div className="relative flex flex-col items-center justify-center space-y-8">
-                <div className="flex items-center justify-center text-center text-7xl font-semibold text-[#00d54f]">
+                <div className="flex items-center justify-center text-center text-7xl font-semibold text-[#800080]">
                     <input className="w-12 outline-none" id="amount" name="amount" type="number" value={amount} onChange={onAmountInput} min={0} />
                     <label htmlFor="amount">SOL</label>
                 </div>
@@ -49,7 +51,7 @@ const NewTransactionModal = ({ modalOpen, setModalOpen, addTransaction }) => {
                 </div>
 
                 <div className="flex w-full space-x-1">
-                    <button onClick={onPay} className="w-full rounded-lg bg-[#00d54f] py-3 px-12 text-white hover:bg-opacity-70">
+                    <button onClick={onPay} className="w-full rounded-lg bg-[#800080] py-3 px-12 text-white hover:bg-opacity-70">
                         Pay
                     </button>
                 </div>

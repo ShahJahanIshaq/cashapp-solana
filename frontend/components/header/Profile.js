@@ -1,5 +1,7 @@
+import { useCashApp } from "../../hooks/cashapp"
 import { truncate } from "../../utils/string"
 const Profile = ({ setModalOpen, avatar, userAddress, setQrCode }) => {
+    const { connected } = useCashApp()
     const onProfileOpen = () => {
         setModalOpen(true)
         setQrCode(false)
@@ -13,7 +15,7 @@ const Profile = ({ setModalOpen, avatar, userAddress, setQrCode }) => {
             <div className="flex flex-col items-center space-y-1">
                 <p className="font-semibold text-white">{truncate(userAddress)}</p>
 
-                <p className="text-sm font-light italic text-gray-100">${truncate(userAddress)}</p>
+                {/* <p className="text-sm font-light italic text-gray-100">{connected ? "Click to Get Paid" : "Disconnected"}</p> */}
             </div>
         </div>
     )

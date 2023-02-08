@@ -7,7 +7,7 @@ import Modal from '../Modal'
 const TransactionDetailModal = ({ currentTransaction, modalOpen, setModalOpen }) => {
     return (
         <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
-            <div className="space-y-20">
+            <div className="space-y-10">
                 <TransactionProfile name={currentTransaction?.to.name} handle={currentTransaction?.to.name} avatar={currentTransaction?.to.avatar} verified={currentTransaction?.to.verified} />
 
                 <TransactionDetails amount={currentTransaction?.amount} description={currentTransaction?.description} transactionDate={currentTransaction?.transactionDate} />
@@ -16,13 +16,11 @@ const TransactionDetailModal = ({ currentTransaction, modalOpen, setModalOpen })
 
                 <TransactionMetadata
                     metadata={{
-                        amount: `${Number(currentTransaction?.amount).toFixed(2)} SOL`,
+                        amount: `${Number(currentTransaction?.amount).toFixed(3)} SOL`,
                         to: currentTransaction?.to.name,
                         from: currentTransaction?.from.name,
                     }}
                 />
-
-                <TransactionFooter />
             </div>
         </Modal>
     )
@@ -42,7 +40,7 @@ const TransactionProfile = ({ name, handle, avatar, verified }) => {
                     {verified && <CheckBadgeIcon className="h-5 w-5 text-blue-500" />}
                 </div>
 
-                <p className="text-sm font-light text-gray-600 truncate">Payment to ${handle}</p>
+                {/* <p className="text-sm font-light text-gray-600 truncate">Payment to ${handle}</p> */}
             </div>
         </div>
     )
@@ -51,8 +49,8 @@ const TransactionProfile = ({ name, handle, avatar, verified }) => {
 const TransactionDetails = ({ amount, description, transactionDate }) => {
     return (
         <div className="flex flex-col items-center justify-center space-y-4">
-            <h3 className="text-6xl">{Number(amount).toFixed(1)} SOL</h3>
-            <div className="flex flex-col items-center text-gray-400">
+            <h3 className="text-6xl">{Number(amount).toFixed(3)} SOL</h3>
+            <div className="flex flex-col items-center text-gray-500">
                 <p>{description}</p>
                 <p>
                     {format(new Date(transactionDate), 'MMM d')} at {format(new Date(transactionDate), 'h:mm aa')}

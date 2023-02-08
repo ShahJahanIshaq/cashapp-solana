@@ -2,7 +2,9 @@ import { format } from 'date-fns'
 
 const TransactionItem = ({ id, to, description, transactionDate, amount, toggleTransactionDetailModal }) => {
     const onItemClick = () => {
-        toggleTransactionDetailModal(true, id)
+        if (id != "total") {
+            toggleTransactionDetailModal(true, id)
+        }
     }
 
     return (
@@ -12,9 +14,9 @@ const TransactionItem = ({ id, to, description, transactionDate, amount, toggleT
                 <p className="truncate text-sm text-gray-800">{to.name}</p>
             </div>
 
-            <p className="col-span-4 text-sm text-gray-400">{description}</p>
-            <p className="col-span-1 text-sm text-gray-400">{format(new Date(transactionDate), 'MMM d')}</p>
-            <p className="col-span-1 text-right text-sm font-medium text-gray-800">{amount} SOL</p>
+            <p className="col-span-4 text-sm text-[#900090]">{description}</p>
+            <p className="col-span-1 text-sm text-gray-400">{transactionDate != "" ? format(new Date(transactionDate), 'MMM d'): ""}</p>
+            <p className="col-span-1 text-right text-sm font-medium text-[#900090]">{amount} SOL</p>
         </div>
     )
 }
